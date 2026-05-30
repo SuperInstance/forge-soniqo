@@ -169,7 +169,7 @@ pub fn parse_wav(data: &[u8]) -> Result<Vec<f32>, String> {
 
     // Parse fmt chunk
     let num_channels = u16::from_le_bytes([data[22], data[23]]);
-    let sample_rate = u32::from_le_bytes([data[24], data[25], data[26], data[27]]);
+    let _sample_rate = u32::from_le_bytes([data[24], data[25], data[26], data[27]]);
     let bits_per_sample = u16::from_le_bytes([data[34], data[35]]);
 
     if bits_per_sample != 16 {
@@ -190,7 +190,7 @@ pub fn parse_wav(data: &[u8]) -> Result<Vec<f32>, String> {
         if chunk_id == b"data" {
             let data_start = offset + 8;
             let data_end = std::cmp::min(data_start + chunk_size, data.len());
-            let num_samples = (data_end - data_start) / 2;
+            let _num_samples = (data_end - data_start) / 2;
 
             let samples: Vec<f32> = data[data_start..data_end]
                 .chunks_exact(2)
@@ -209,7 +209,7 @@ pub fn parse_wav(data: &[u8]) -> Result<Vec<f32>, String> {
         }
         offset += 8 + chunk_size;
         // Align to even
-        if offset % 2 != 0 {
+        if !offset.is_multiple_of(2) {
             offset += 1;
         }
     }
